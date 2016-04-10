@@ -41,9 +41,9 @@ public class UserServiceImpl implements UserServiceIF{
     }
 
     @Override
-    public int updateCellNumber(int uid, String cellNumber) {
+    public int updateCellNumber(int uid,String area, String cellNumber) {
 
-      return userDao.updateCellNumber(uid, cellNumber);
+      return userDao.updateCellNumber(uid,area, cellNumber);
 
     }
 
@@ -51,5 +51,10 @@ public class UserServiceImpl implements UserServiceIF{
     public User getUser(Integer userId) {
 
         return userDao.getUser(userId);
+    }
+
+    @Override
+    public int updatePassword(Integer uid, String password) {
+        return userDao.updatePassword(uid,password);
     }
 }

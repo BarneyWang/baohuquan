@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.Random;
 
 import static com.baohuquan.constant.Constants.TOKEN_ENCRYPTION;
+import static com.baohuquan.constant.Constants.PASSWORD_ENCRYPTION;
 
 /**
  * Created by wangdi5 on 2016/3/23.
@@ -40,5 +41,24 @@ public class TokenUtil {
         token = token.substring(1) + token.charAt(0) + random.nextInt(10);
         return token;
     }
+
+
+
+    /**
+     * encode token
+     * @param password
+     * @return
+     */
+    public static String generatePassword(String password) {
+        DESUtil desUtil = new DESUtil(PASSWORD_ENCRYPTION);
+        String token = desUtil.encryptStr(PASSWORD_ENCRYPTION + password);
+        return token;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(generatePassword("123456789011").length());
+
+    }
+
 
 }

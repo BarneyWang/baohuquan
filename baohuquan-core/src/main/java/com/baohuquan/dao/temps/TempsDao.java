@@ -34,6 +34,9 @@ public interface TempsDao {
     @Delete("DELETE FROM t_temps where b_id=#{babyId}")
     public int delByBaby(@Param("babyId") int babyId);
 
+    @Select("SELECT " + COLUMNS + " FROM t_temps where  b_id=#{babyId} ORDER BY get_time DESC")
+    public List<Temps> getTemp(@Param("babyId") int babyId);
+
 
     @Select("SELECT id,b_id AS babyId,,temps,high_temp AS highTemp,get_time AS getTime,create_time AS createTime from t_temps where get_time >= #{start} and get_time <= #{end} and f_id =#{babyId}")
     public List<Temps> getTempByTime(@Param("babyId") int babyId, @Param("start") Date start, @Param("end") Date end);

@@ -32,5 +32,10 @@ public interface TempsServiceIF {
     public Temps saveTemps(int babyId, Date day, int temp);
 
 
-
+    /**
+     * 获取所有的
+     * @param babyid
+     * @return
+     */
+    List<Temps> get(int babyid);
 }

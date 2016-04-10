@@ -1,5 +1,6 @@
 package com.baohuquan.controller.user;
 
+import com.baohuquan.anno.TokenRequired;
 import com.baohuquan.cache.XMemcached;
 import com.baohuquan.constant.CacheKeyConstants;
 import com.baohuquan.constant.Gender;
@@ -132,7 +133,7 @@ public class UserController {
             responseWrapper.setMsg(rc.getMsg());
             return responseWrapper.toJSON();
         }
-        String smCode = generalSMCode(6);
+        String smCode = generalSMCode(4);
         String tpl = "";
         tpl = MSGTPL.replaceAll("\\{0\\}", smCode);
 
@@ -144,8 +145,6 @@ public class UserController {
             return responseWrapper.toJSON();
         }
         logger.info("[发送验证码]cellnumber=" + phone_number + "|msg=" + tpl);
-        //替换后的
-//        String res = HttpClientUtil.get(url);
         XMemcached.set(CacheKeyConstants.KEY_PHONE_SMCODE + "_" + phone_number, EXPIRE_5_MINUTE, smCode);
         responseWrapper.getCost(System.currentTimeMillis()-start);
         return responseWrapper.toJSON();
@@ -214,12 +213,18 @@ public class UserController {
     }
 
 
+
+
+
+
+
     /**
      * 修改头像
      * @param uid
      * @param avatarUrl
      * @return
      */
+    @TokenRequired
     @RequestMapping(value = "/update_avatar", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public String updateImg(@RequestParam(value = "uid")Integer uid,
@@ -233,6 +238,8 @@ public class UserController {
             responseWrapper.setMsg(rc.getMsg());
             return responseWrapper.toJSON();
         }
+        logger.info("[user]修改头像成功|uid="+uid);
+
         userService.updateAvatar(uid, avatarUrl);
         return responseWrapper.toJSON();
     }
@@ -244,6 +251,7 @@ public class UserController {
      * @param nickName
      * @return
      */
+    @TokenRequired
     @RequestMapping(value = "/update_nickname", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public String updateNickName(@RequestParam(value = "uid") Integer uid,
@@ -257,6 +265,8 @@ public class UserController {
             responseWrapper.setMsg(rc.getMsg());
             return responseWrapper.toJSON();
         }
+        logger.info("[user]修改昵称成功|uid="+uid);
+
         userService.updateAvatar(uid, nickName);
         return responseWrapper.toJSON();
     }
@@ -268,9 +278,11 @@ public class UserController {
      * @param cellnumber
      * @return
      */
+    @TokenRequired
     @RequestMapping(value = "/update_cellnumber", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public String updateCellNumber(@RequestParam(value = "uid") Integer uid,
+                                   @RequestParam(value="area") String area,
                                  @RequestParam(value = "cellnumber") String cellnumber){
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
@@ -280,9 +292,60 @@ public class UserController {
             responseWrapper.setMsg(rc.getMsg());
             return responseWrapper.toJSON();
         }
-        userService.updateCellNumber(uid, cellnumber);
+        logger.info("[user]修改手机号成功|uid="+uid);
+        userService.updateCellNumber(uid, area,cellnumber);
+        //TODO 考虑删除分享信息
+
         return responseWrapper.toJSON();
     }
+
+    /**
+     * 修改手机号
+     * @param uid
+     * @return
+     */
+    @TokenRequired
+    @RequestMapping(value = "/unbind/cell", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String unbingCell(@RequestParam(value = "uid") Integer uid){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        logger.info("[user]解绑手机号成功|uid="+uid);
+        userService.updateCellNumber(uid,StringUtils.EMPTY,StringUtils.EMPTY);
+        return responseWrapper.toJSON();
+    }
+
+
+
+//    /**
+//     * 修改手机号
+//     * @param uid
+//     * @param password
+//     * @return
+//     */
+//    @TokenRequired
+//    @RequestMapping(value = "/update_password", produces = {"application/json;charset=UTF-8"})
+//    @ResponseBody
+//    public String updatePassword(@RequestParam(value = "uid") Integer uid,
+//                                   @RequestParam(value = "password") String password,
+//                                  @RequestParam(value="orginPwd")String orginPwd ){
+//        ResponseWrapper responseWrapper = new ResponseWrapper();
+//        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+//
+//        String pwd= TokenUtil.generatePassword(orginPwd);
+//        User user = userService.getUser(uid);
+//        //比较原始密码
+//        if(!orginPwd.equalsIgnoreCase(user.getPassword())){
+//            logger.info("[user]修改密码失败|uid="+uid);
+//            responseWrapper.setCode(ResponseCode.PWD_WRONG.getCode());
+//            responseWrapper.setMsg(ResponseCode.PWD_WRONG.getMsg());
+//            return responseWrapper.toJSON();
+//        }
+//        logger.info("[user]修改密码成功|uid="+uid);
+//        userService.updatePassword(uid, pwd);
+//        return responseWrapper.toJSON();
+//    }
+
 
 
     private ResponseCode validateParam(Integer userId, Integer gender) {

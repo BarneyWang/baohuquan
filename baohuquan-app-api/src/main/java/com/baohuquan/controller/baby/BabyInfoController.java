@@ -48,11 +48,11 @@ public class BabyInfoController {
 
     @TokenRequired
     @ResponseBody
-    @RequestMapping(value="/update/{id}")
-    public String updateBabyInfo(@PathVariable Integer id, Baby b){
+    @RequestMapping(value="/update/{babyid}")
+    public String updateBabyInfo(@PathVariable Integer babyid, Baby b){
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        b.setId(id);
+        b.setId(babyid);
         int i =babyService.updateBabyInfo(b);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
@@ -68,11 +68,10 @@ public class BabyInfoController {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<Baby> l=babyService.getBabyInfo(uid);
-        //TODO 取的分享出来的baby
         l.addAll(sharedBabyInfoService.getSharedInfos(uid));
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
-        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
-        responseWrapper.addValue("info",l);
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());;
+        responseWrapper.addValue("data",l);
         responseWrapper.setCost(System.currentTimeMillis() - start);
         return responseWrapper.toJSON();
     }

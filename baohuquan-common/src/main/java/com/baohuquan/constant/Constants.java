@@ -16,7 +16,7 @@ public class Constants {
 
     public static final String TOKEN_ENCRYPTION="token%222";
 
-
+    public static final String PASSWORD_ENCRYPTION="pwdbhq2016%**";
 
 
 }

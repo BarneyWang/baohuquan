@@ -1,13 +1,16 @@
 package com.baohuquan.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用户
  * Created by wangdi on 2016/3/20.
  */
-public class User {
+public class User  implements Serializable{
 
+
+    private static final long serialVersionUID = 7239350957650937080L;
 
     private int id;
     private String area;
@@ -82,4 +85,5 @@ public class User {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
 }

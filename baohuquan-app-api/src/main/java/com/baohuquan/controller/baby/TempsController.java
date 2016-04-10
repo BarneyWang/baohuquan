@@ -1,5 +1,6 @@
 package com.baohuquan.controller.baby;
 
+import com.baohuquan.anno.TokenRequired;
 import com.baohuquan.model.Temps;
 import com.baohuquan.service.TempsServiceIF;
 import com.baohuquan.utils.ResponseCode;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +29,13 @@ public class TempsController {
     TempsServiceIF tempsService;
 
 
+    @TokenRequired
     @ResponseBody
-    @RequestMapping(value = "/get/{babyid}")
-    public String getTempsInDay(@PathVariable int babyid,
-                                @RequestParam("time") long time) {
+    @RequestMapping(value = "/download/{babyid}")
+    public String getTemps(@PathVariable int babyid) {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        Temps temps = tempsService.getByDay(babyid, new Date(time));
+        List<Temps> temps = tempsService.get(babyid);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.addValue("data", temps);
@@ -41,8 +43,29 @@ public class TempsController {
         return responseWrapper.toJSON();
     }
 
+
+    @TokenRequired
     @ResponseBody
-    @RequestMapping(value = "/get/{babyid}")
+    @RequestMapping(value = "/get/day/{babyid}")
+    public String getTempsInDay(@PathVariable int babyid,
+                                @RequestParam("year") int year,
+                                @RequestParam("month") int month,
+                                @RequestParam("day") int day) {
+        long start = System.currentTimeMillis();
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        Calendar cal = Calendar.getInstance();
+        cal.set(year,month-1,day);
+        Temps temps = tempsService.getByDay(babyid, cal.getTime());
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
+        responseWrapper.addValue("data", temps);
+        responseWrapper.setCost(System.currentTimeMillis() - start);
+        return responseWrapper.toJSON();
+    }
+
+    @TokenRequired
+    @ResponseBody
+    @RequestMapping(value = "/get/month/{babyid}")
     public String getTempsInMonth(@PathVariable int babyid,
                                   @RequestParam("year") int year,
                                   @RequestParam("month") int month) {
@@ -59,27 +82,15 @@ public class TempsController {
     }
 
 
+    @TokenRequired
     @ResponseBody
     @RequestMapping(value = "/upload/{babyid}", method = {RequestMethod.POST})
     public String uploadTemps(@PathVariable int babyid,
-                              @RequestParam("uid") int uid,
-                              @RequestBody TempUpload temp) {
+                              @RequestParam Long time,
+                              @RequestParam Integer temp ) {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-//        JSONObject o = new JSONObject();
-//        o.put("baby",1);
-//        o.put("uid",1);
-//        JSONArray a =new JSONArray();
-//        JSONObject o1 =new JSONObject();
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        a.add(o1);
-//        o.put("data",a);
-        tempsService.saveTemps(babyid, new Date(temp.getTime()), temp.getTemp());
-
+        tempsService.saveTemps(babyid, new Date(time), temp);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);
@@ -87,31 +98,17 @@ public class TempsController {
         return responseWrapper.toJSON();
     }
 
+    @TokenRequired
     @RequestMapping(value = "/history/upload/{babyid}")
     public void uploadHistoryTemps(@PathVariable int babyid,
-                                   @RequestParam("uid") int uid,
                                    @RequestBody TempUpload[] tempUploads) {
 
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-//
-//        JSONObject o = new JSONObject();
-//        o.put("baby",1);
-//        o.put("uid",1);
-//        JSONArray a =new JSONArray();
-//        JSONObject o1 =new JSONObject();
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        o1.put(String.valueOf(new Date().getTime()),371);
-//        a.add(o1);
 
         for (TempUpload temp : tempUploads) {
-
             tempsService.saveTemps(babyid, new Date(temp.getTime()), temp.getTemp());
         }
-
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);

@@ -106,5 +106,17 @@ public class TempsServiceImpl implements TempsServiceIF {
 
     }
 
+    /**
+     * 获取所有的
+     *
+     * @param babyid
+     * @return
+     */
+    @Override
+    public List<Temps> get(int babyid) {
+        List<Temps> temps = tempsDao.getTemp(babyid);
+        return temps;
+    }
+
 
 }

@@ -16,7 +16,9 @@ public interface UserServiceIF {
 
     int updateNickName(int userId, String nickName);
 
-    int updateCellNumber(int uid, String cellNumber);
+    int updateCellNumber(int uid,String area, String cellNumber);
 
     User getUser(Integer userId);
+
+    int updatePassword(Integer uid, String password);
 }
