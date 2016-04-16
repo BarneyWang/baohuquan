@@ -26,4 +26,7 @@ public interface ThirdUserDao {
     @Select("select "+CLOUMNS+" from t_third_user where type = #{type} and open_id = #{openId}")
     ThirdUser getThirdUser(@Param(value = "type") byte type,
                            @Param(value = "openId") String openId);
+
+    @Select("select "+CLOUMNS+" from t_third_user where user_id = #{uid}")
+    ThirdUser getThirdUserByUid(@Param(value = "uid")Integer uid);
 }

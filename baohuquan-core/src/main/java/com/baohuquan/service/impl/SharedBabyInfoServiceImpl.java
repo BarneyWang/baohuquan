@@ -128,19 +128,34 @@ public class SharedBabyInfoServiceImpl implements SharedBabyInfoServiceIF {
         return info;
     }
 
+//    @Override
+//    public int isHaveSharedInfo(String cellNumber, int receiver) {
+//
+//        List<SharedBabyInfo> infos = sharedBabyInfoDao.getInfoByBabyByCell(cellNumber);
+//        if (!CollectionUtils.isEmpty(infos)) {
+//            StringBuilder builder = new StringBuilder();
+//            for (SharedBabyInfo info : infos) {
+//                builder.append(info.getId()).append(",");
+//            }
+//            builder.deleteCharAt(builder.length()-1);
+//            return sharedBabyInfoDao.recevierAccpet(builder.toString(),receiver);
+//        }
+//        return 0;
+//
+//    }
+
     @Override
-    public int isHaveSharedInfo(String cellNumber, int recevier) {
+    public int isHaveSharedInfo(String cellNumber, int receiver) {
 
         List<SharedBabyInfo> infos = sharedBabyInfoDao.getInfoByBabyByCell(cellNumber);
+        int i=0;
         if (!CollectionUtils.isEmpty(infos)) {
-            StringBuilder builder = new StringBuilder();
-            for (SharedBabyInfo info : infos) {
-                builder.append(info.getId()).append(",");
+            for(SharedBabyInfo info : infos){
+            sharedBabyInfoDao.recevierAccpet(info.getId(),receiver);
+                  i++;
             }
-            builder.deleteCharAt(builder.length()-1);
-            return sharedBabyInfoDao.recevierAccpet(builder.toString());
         }
-        return 0;
+        return i;
 
     }
 }

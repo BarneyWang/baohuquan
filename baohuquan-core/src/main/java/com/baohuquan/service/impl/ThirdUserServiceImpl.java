@@ -25,4 +25,9 @@ public class ThirdUserServiceImpl implements ThirdUserServiceIF {
     public ThirdUser getThirdUser(Byte type, String openid) {
         return thirdUserDao.getThirdUser(type,openid);
     }
+
+    @Override
+    public ThirdUser getThirdUserByUid(Integer uid) {
+        return thirdUserDao.getThirdUserByUid(uid);
+    }
 }

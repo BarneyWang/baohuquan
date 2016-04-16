@@ -26,7 +26,7 @@ public class SharedBabyInfoServiceTest {
 //        int i = sharedBabyInfoService.sharedBabyInfo(6,"12898622527",1,null);
 //        System.out.println(i);
 
-          sharedBabyInfoService.isHaveSharedInfo("12898622527",2);
+          sharedBabyInfoService.isHaveSharedInfo("18618721415",2);
 
     }
 }

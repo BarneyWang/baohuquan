@@ -12,4 +12,6 @@ public interface ThirdUserServiceIF {
     void saveThirdUser(ThirdUser thirdUser);
 
     ThirdUser getThirdUser(Byte type, String openid);
+
+    ThirdUser getThirdUserByUid(Integer uid);
 }

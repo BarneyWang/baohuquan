@@ -5,17 +5,8 @@ package com.baohuquan.dao.shared.provider;
  */
 public class SharedBabyInfoSQLProvider {
 
-    public String recevierAccpet(final String ids) {
-//        return new SQL()
-//        {
-//            {
-//                UPDATE("t_sharedbabyinfo");
-//                SET("receiver ="+receiver);
-//                WHERE(" id in ("+ids+")");
-//            }
-//        } .toString();
+    public String receiverAccpet(final String ids,final int receiver) {
 
-        System.out.println("-------------------------------1");
-        return "UPDATE t_sharedbabyinfo SET receiver ="+2 + " WHERE id in ("+ids+")";
+        return "UPDATE t_sharedbabyinfo SET receiver ="+receiver+ " WHERE id in ("+ids+")";
     }
 }

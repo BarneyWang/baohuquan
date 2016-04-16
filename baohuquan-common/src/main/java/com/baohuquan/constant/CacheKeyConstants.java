@@ -6,4 +6,5 @@ package com.baohuquan.constant;
 public class CacheKeyConstants {
 
    public static final String KEY_PHONE_SMCODE="BAOHUQUAN_SMCODE_%s";
+    public static final String KEY_PHONE_SMCODE_UPDATE="BAOHUQUAN_UPDATE_%s";
 }

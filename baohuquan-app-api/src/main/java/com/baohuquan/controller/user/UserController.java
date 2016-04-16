@@ -41,6 +41,7 @@ import static com.baohuquan.constant.Constants.EXPIRE_5_MINUTE;
 @Controller
 @RequestMapping(value = "/user", produces = {"application/json;charset=UTF-8"})
 public class UserController {
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
@@ -151,6 +152,10 @@ public class UserController {
     }
 
 
+
+
+
+
     /**
      * 手机号登陆
      *
@@ -160,7 +165,7 @@ public class UserController {
     @RequestMapping(value = "/login", params = "type=0", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public String login(String area,
-                        @RequestParam(value = "cellnumbser") String cellNumber,
+                        @RequestParam(value = "cellnumber") String cellNumber,
                         @RequestParam(value = "smscode") String smCode) {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
@@ -185,6 +190,7 @@ public class UserController {
         }
         if (StringUtils.equals(smCode, oldSMCode)) {
             User user = null;
+            String token=null;
             //防止请求过快
             synchronized (cellNumber.intern()) {
                 XMemcached.delete(CacheKeyConstants.KEY_PHONE_SMCODE + "_" + cellNumber);
@@ -192,6 +198,9 @@ public class UserController {
                 //手机号不存在则创建用户
                 if (user == null) {
                     user = createUser(area, cellNumber);
+                    userService.saveUser(user);
+                    token=TokenUtil.generalToken(user.getId());
+                    userService.updateUserToken(user.getId(),token);
                     isFirst = true;
                 }
             }
@@ -202,7 +211,7 @@ public class UserController {
             responseWrapper.addValue("nickName", user.getNickName());
             responseWrapper.addValue("gender", user.getGender());
             responseWrapper.addValue("isFirst", isFirst ? 0 : 1);
-            responseWrapper.addValue("token",user.getToken());
+            responseWrapper.addValue("token",StringUtils.isBlank(token)?user.getToken():token);
 
         } else {
             responseWrapper.setCode(ResponseCode.SMCODE_ILLEGAL_TIMEOUT.getCode());
@@ -228,7 +237,7 @@ public class UserController {
     @RequestMapping(value = "/update_avatar", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public String updateImg(@RequestParam(value = "uid")Integer uid,
-                            @RequestParam(value = "avararurl")String avatarUrl){
+                            @RequestParam(value = "avatarurl")String avatarUrl){
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         ResponseCode rc = validateParamImg(uid, avatarUrl);
@@ -267,7 +276,66 @@ public class UserController {
         }
         logger.info("[user]修改昵称成功|uid="+uid);
 
-        userService.updateAvatar(uid, nickName);
+        userService.updateNickName(uid, nickName);
+        return responseWrapper.toJSON();
+    }
+
+
+    /**
+     * 修改昵称
+     * @param uid
+     * @param gender
+     * @return
+     */
+    @TokenRequired
+    @RequestMapping(value = "/update_gender", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String updateGender(@RequestParam(value = "uid") Integer uid,
+                                 @RequestParam(value = "gender") Integer gender){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+
+        logger.info("[user]修改性别成功|uid="+uid);
+
+        userService.updateGender(uid, gender);
+        return responseWrapper.toJSON();
+    }
+
+
+
+    /**
+     * 获取短信验证码（绑定手机号）
+     *
+     * @return
+     */
+    @RequestMapping(value = "/update/SMCode", produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String getUpdateSMCode(String area,
+                                  @RequestParam("cell_phone") String phone_number) throws UnsupportedEncodingException {
+
+        long start = System.currentTimeMillis();
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        ResponseCode rc = validateAreaAndPhone(area, phone_number);
+        if (!"0".equals(rc.getCode())) {
+            responseWrapper.setCode(rc.getCode());
+            responseWrapper.setMsg(rc.getMsg());
+            return responseWrapper.toJSON();
+        }
+        String smCode = generalSMCode(4);
+        String tpl = "";
+        tpl = MSGTPL.replaceAll("\\{0\\}", smCode);
+
+        boolean isSend=  msgSender.sendSMS(tpl,phone_number,"2000");
+        if(!isSend){
+            responseWrapper.getCost(System.currentTimeMillis()-start);
+            responseWrapper.setCode(ResponseCode.SMCODE_SEND_FAIL.getCode());
+            responseWrapper.setMsg(ResponseCode.SMCODE_SEND_FAIL.getMsg());
+            return responseWrapper.toJSON();
+        }
+        logger.info("[发送验证码][绑定手机号]cellnumber=" + phone_number + "|msg=" + tpl);
+        XMemcached.set(CacheKeyConstants.KEY_PHONE_SMCODE_UPDATE + "_" + phone_number, EXPIRE_5_MINUTE, smCode);
+        responseWrapper.getCost(System.currentTimeMillis()-start);
         return responseWrapper.toJSON();
     }
 
@@ -283,7 +351,9 @@ public class UserController {
     @ResponseBody
     public String updateCellNumber(@RequestParam(value = "uid") Integer uid,
                                    @RequestParam(value="area") String area,
-                                 @RequestParam(value = "cellnumber") String cellnumber){
+                                 @RequestParam(value = "cellnumber") String cellnumber,
+                                  @RequestParam(value="smCode") String smCode){
+        long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         ResponseCode rc = validateParamImg(uid, cellnumber);
@@ -292,15 +362,48 @@ public class UserController {
             responseWrapper.setMsg(rc.getMsg());
             return responseWrapper.toJSON();
         }
-        logger.info("[user]修改手机号成功|uid="+uid);
-        userService.updateCellNumber(uid, area,cellnumber);
-        //TODO 考虑删除分享信息
+        String oldSMCode = XMemcached.get(CacheKeyConstants.KEY_PHONE_SMCODE_UPDATE + "_" + cellnumber);
 
+        //万能测试号
+        if ("3141592".equals(smCode)) {
+            oldSMCode = "3141592";
+        }
+        if (oldSMCode == null) {
+            responseWrapper.setCode(ResponseCode.SMCODE_TIMEOUT.getCode());
+            responseWrapper.setMsg(ResponseCode.SMCODE_TIMEOUT.getMsg());
+            return responseWrapper.toJSON();
+        }
+        if (StringUtils.equals(smCode, oldSMCode)) {
+            ThirdUser thirdUser = thirdUserService.getThirdUserByUid(uid);
+            if(thirdUser==null){
+                responseWrapper.setCode(ResponseCode.THIRDUSER_ONLY.getCode());
+                responseWrapper.setMsg(ResponseCode.THIRDUSER_ONLY.getMsg());
+                return responseWrapper.toJSON();
+            }
+            User user = userService.getUserByCell(cellnumber);
+            if(user!=null){
+                responseWrapper.setCode(ResponseCode.REPETITION_CELL.getCode());
+                responseWrapper.setMsg(ResponseCode.REPETITION_CELL.getMsg());
+                return responseWrapper.toJSON();
+            }
+            logger.info("[user]修改手机号成功|uid="+uid);
+            userService.updateCellNumber(uid, area,cellnumber);
+            responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+            responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
+        }
+        else {
+            responseWrapper.setCode(ResponseCode.SMCODE_ILLEGAL_TIMEOUT.getCode());
+            responseWrapper.setMsg(ResponseCode.SMCODE_ILLEGAL_TIMEOUT.getMsg());
+        }
+        responseWrapper.getCost(System.currentTimeMillis()-start);
         return responseWrapper.toJSON();
+
+
     }
 
     /**
      * 修改手机号
+     * 只有第三方登陆才能修改
      * @param uid
      * @return
      */
@@ -311,6 +414,7 @@ public class UserController {
         ResponseWrapper responseWrapper = new ResponseWrapper();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         logger.info("[user]解绑手机号成功|uid="+uid);
+
         userService.updateCellNumber(uid,StringUtils.EMPTY,StringUtils.EMPTY);
         return responseWrapper.toJSON();
     }
@@ -435,7 +539,9 @@ public class UserController {
         user.setGender(thirdUserParam.getGender());
         int id =userService.saveUser(user);
         user.setId(id);
-        user.setToken(TokenUtil.generalToken(id));
+        String token=TokenUtil.generalToken(id);
+        user.setToken(token);
+        userService.updateUserToken(id,token);
         return user;
     }
 
@@ -445,6 +551,8 @@ public class UserController {
         user.setArea(area);
         user.setCellNumber(cellNumber);
         user.setNickName(generalNickName());
+
+        user.setCreateTime(new Date());
         return user;
     }
 

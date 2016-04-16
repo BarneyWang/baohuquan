@@ -14,11 +14,11 @@ public enum ResponseCode {
     SMCODE_SEND_FAIL("000024","验证码发送失败"),
     TOKEN_MISS("100001","没有TOKEN"),
     TOKEN_WRONG("100002","TOKEN错误"),
-    PWD_WRONG("200000","密码错误"),
+   THIRDUSER_ONLY("200000","只有第三方登陆用户才能修改"),
 
 
-    REPETITION_SHARED("300001","重复分享")
-    ;
+    REPETITION_SHARED("300001","重复分享"),
+    REPETITION_CELL("300002","手机号已经注册");
 
     private ResponseCode(String c, String m){
         this.code = c;

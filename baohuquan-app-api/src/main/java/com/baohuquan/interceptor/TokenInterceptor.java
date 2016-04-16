@@ -30,9 +30,10 @@ public class TokenInterceptor implements HandlerInterceptor {
                         || he.getBeanType().getAnnotation(TokenRequired.class) != null;
         String token = httpServletRequest.getParameter("token");
 
-        if(token.equalsIgnoreCase("123sss123")){
-            return true;
-        }
+//        if(!mustLogin){
+//            return true;
+//        }
+
 
         if(StringUtils.isBlank(token)) {
             if(!mustLogin) {
@@ -45,19 +46,35 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        if(token.equalsIgnoreCase("123sss123")){
+            return true;
+        }
+
         Integer userId = TokenUtil.getUserIdFromToken(token);
 
         if (userId == null) {
             if (!mustLogin) {
                 return true;
             }
+
             ResponseWrapper responseWrapper = new ResponseWrapper();
             responseWrapper.setCode(ResponseCode.TOKEN_WRONG.getCode());
             responseWrapper.setMsg(ResponseCode.TOKEN_WRONG.getMsg());
             printJson(httpServletResponse, responseWrapper.toJSON());
             return false;
         }
+        //比较生成的uid是否一样
+        String uid = httpServletRequest.getParameter("uid");
+        if(StringUtils.isBlank(uid))
+            return false;
 
+        if(userId!=Integer.valueOf(uid)){
+            ResponseWrapper responseWrapper = new ResponseWrapper();
+            responseWrapper.setCode(ResponseCode.TOKEN_WRONG.getCode());
+            responseWrapper.setMsg(ResponseCode.TOKEN_WRONG.getMsg());
+            printJson(httpServletResponse, responseWrapper.toJSON());
+            return false;
+        }
 
         return true;
     }

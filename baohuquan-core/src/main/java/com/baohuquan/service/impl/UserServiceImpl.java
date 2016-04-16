@@ -54,7 +54,14 @@ public class UserServiceImpl implements UserServiceIF{
     }
 
     @Override
-    public int updatePassword(Integer uid, String password) {
-        return userDao.updatePassword(uid,password);
+    public int updateUserToken(int uid, String token) {
+        return userDao.updateToken(uid,token);
     }
+
+    @Override
+    public int updateGender(Integer uid, Integer gender) {
+        return  userDao.updateGender(uid, gender);
+    }
+
+
 }

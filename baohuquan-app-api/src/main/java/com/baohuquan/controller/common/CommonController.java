@@ -32,7 +32,6 @@ public class CommonController {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<ChannelMsg> list =commonService.getChannelMsgs();
-
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.addValue("list", list);

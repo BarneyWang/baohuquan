@@ -71,7 +71,7 @@ public class TempsController {
                                   @RequestParam("month") int month) {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        List<Temps> tempsList = tempsService.getByMonth(babyid, year, month);
+        List<Temps> tempsList = tempsService.getByMonth(babyid,month,year);
         Map<String, Object> data = Maps.newHashMap();
         data.put("data", toJson(tempsList));
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
@@ -84,7 +84,7 @@ public class TempsController {
 
     @TokenRequired
     @ResponseBody
-    @RequestMapping(value = "/upload/{babyid}", method = {RequestMethod.POST})
+    @RequestMapping(value = "/upload/{babyid}", method = {RequestMethod.POST,RequestMethod.GET})
     public String uploadTemps(@PathVariable int babyid,
                               @RequestParam Long time,
                               @RequestParam Integer temp ) {
@@ -94,7 +94,6 @@ public class TempsController {
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);
-
         return responseWrapper.toJSON();
     }
 

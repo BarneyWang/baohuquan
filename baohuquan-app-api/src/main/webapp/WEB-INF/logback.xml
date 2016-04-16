@@ -32,16 +32,16 @@
     </appender>
 
     <appender name="CoalescingStatistics" class="org.perf4j.logback.AsyncCoalescingStatisticsAppender">
-        <param name="TimeSlice" value="30000"/>
+        <param name="TimeSlice" value="300000"/>
         <appender-ref ref="perfmancelogger"/>
     </appender>
 
-    <logger name="org.perf4j.logger"  level="info" additivity="false">
-        <appender-ref ref="CoalescingStatistics" />
-    </logger>
+    <!--<logger name="org.perf4j.logger"  level="info" additivity="false">-->
+        <!--<appender-ref ref="CoalescingStatistics" />-->
+    <!--</logger>-->
 
 
-    <root level="warn">
+    <root level="info">
         <!--<appender-ref ref="logger" />-->
         <appender-ref ref="Console" />
     </root>

@@ -114,7 +114,7 @@ public class TempsServiceImpl implements TempsServiceIF {
      */
     @Override
     public List<Temps> get(int babyid) {
-        List<Temps> temps = tempsDao.getTemp(babyid);
+        List<Temps> temps = tempsDao.getTempByBaby(babyid);
         return temps;
     }
 

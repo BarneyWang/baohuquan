@@ -6,6 +6,8 @@ import com.baohuquan.service.SharedBabyInfoServiceIF;
 import com.baohuquan.service.UserServiceIF;
 import com.baohuquan.utils.ResponseCode;
 import com.baohuquan.utils.ResponseWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import java.util.regex.Pattern;
 @RequestMapping(value="/shared", produces = {"application/json;charset=UTF-8"})
 public class SharedController {
 
+    private static final Logger logger = LoggerFactory.getLogger(SharedController.class);
 
     @Resource
     SharedBabyInfoServiceIF sharedBabyInfoService;
@@ -30,6 +33,8 @@ public class SharedController {
     @Resource
     UserServiceIF userService;
 
+
+    @ResponseBody
     @RequestMapping(value = "/{babyid}")
     public String addFamilyMember(@PathVariable int babyid,
                                   @RequestParam("cellnumber") String cellNumber,
@@ -56,6 +61,7 @@ public class SharedController {
          }else{
              sharedBabyInfoService.sharedBabyInfo(babyid,cellNumber,uid,user.getId());
          }
+        logger.warn("[分享]uid="+uid+"|cellnumber="+cellNumber+"|babyid="+babyid);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis()-start);

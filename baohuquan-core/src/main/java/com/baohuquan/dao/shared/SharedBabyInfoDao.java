@@ -1,6 +1,5 @@
 package com.baohuquan.dao.shared;
 
-import com.baohuquan.dao.shared.provider.SharedBabyInfoSQLProvider;
 import com.baohuquan.model.SharedBabyInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -22,9 +21,8 @@ public interface SharedBabyInfoDao {
     @Insert("INSERT INTO t_sharedbabyinfo("+ INSERT_COLUMNS+") values(#{sharer},#{babyId},#{receiverCell},#{receiver},#{createTime})")
     int saveSharedInfo(SharedBabyInfo info);
 
-//    @Update("UPDATE t_sharedbabyinfo set receiver = #{receiver} where  id in ( #{ids} ) ")
-    @UpdateProvider(type = SharedBabyInfoSQLProvider.class, method = "recevierAccpet")
-    int recevierAccpet(@Param("ids") String ids);
+    @Update("UPDATE t_sharedbabyinfo SET receiver = #{receiver}  WHERE  id = #{id}")
+    int recevierAccpet(@Param("id") int id,@Param("receiver") int receiver);
 
 
     @Select("SELECT "+COLUMNS+" FROM t_sharedbabyinfo  where receiver = #{receiver}")
@@ -41,7 +39,7 @@ public interface SharedBabyInfoDao {
     @Select("SELECT "+COLUMNS+" FROM t_sharedbabyinfo  where baby_id = #{babyId}")
     List<SharedBabyInfo> getInfoByBaby(@Param("babyId") int babyId);
 
-    @Select("SELECT "+COLUMNS+" FROM t_sharedbabyinfo  where receiver is null AND  receiver_cell = #{receiverCell} ")
+    @Select("SELECT "+COLUMNS+" FROM t_sharedbabyinfo  where   receiver_cell = #{receiverCell} ")
     List<SharedBabyInfo> getInfoByBabyByCell(@Param("receiverCell") String receiverCell);
 
 

@@ -29,11 +29,11 @@
 
     <mvc:interceptors>
         <!-- 性能拦截器 -->
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/static/**"/>
-            <bean class="com.baohuquan.interceptor.PerformanceInterceptor"/>
-        </mvc:interceptor>
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**"/>-->
+            <!--<mvc:exclude-mapping path="/static/**"/>-->
+            <!--<bean class="com.baohuquan.interceptor.PerformanceInterceptor"/>-->
+        <!--</mvc:interceptor>-->
 
         <!-- 性能拦截器 -->
         <mvc:interceptor>

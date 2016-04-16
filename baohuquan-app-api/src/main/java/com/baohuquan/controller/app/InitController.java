@@ -36,7 +36,7 @@ public class InitController {
 
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        LOGGER.info("[app初始化]|lc="+deviceId+"|appv="+appv+"|appfrom="+appfrom);
+        LOGGER.warn("[app初始化]|lc="+deviceId+"|appv="+appv+"|appfrom="+appfrom);
         //系统当前app 是否需要强升
         App app = appService.getCurrentVersion();
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());

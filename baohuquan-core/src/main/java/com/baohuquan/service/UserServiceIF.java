@@ -20,5 +20,8 @@ public interface UserServiceIF {
 
     User getUser(Integer userId);
 
-    int updatePassword(Integer uid, String password);
+    int updateUserToken(int uid,String token);
+
+
+    int updateGender(Integer uid, Integer gender);
 }
