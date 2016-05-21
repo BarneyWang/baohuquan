@@ -70,7 +70,7 @@ public class BabyInfoController {
         List<Baby> l=babyService.getBabyInfo(uid);
         l.addAll(sharedBabyInfoService.getSharedInfos(uid));
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
-        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());;
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.addValue("data",l);
         responseWrapper.setCost(System.currentTimeMillis() - start);
         return responseWrapper.toJSON();

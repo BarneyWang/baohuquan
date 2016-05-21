@@ -42,7 +42,7 @@
 
 
     <root level="info">
-        <appender-ref ref="logger" />
-        <!--<appender-ref ref="Console" />-->
+        <!--<appender-ref ref="logger" />-->
+        <appender-ref ref="Console" />
     </root>
 </configuration>
