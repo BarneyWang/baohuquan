@@ -12,7 +12,7 @@ public class Constants {
     public static final int EXPIRE_DAY = 86400;
 
 
-    public static final String ENCRYPTION="baohuquan2x%s";
+    public static final String ENCRYPTION="baohuquan";
 
     public static final String TOKEN_ENCRYPTION="token%222";
 

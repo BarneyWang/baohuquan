@@ -85,8 +85,7 @@ public class UserController {
         }
         sb.append(ENCRYPTION).append(thirdUserParam.getOpen_id()).append(ENCRYPTION);
 //        if (StringUtils.equals(signature, DigestUtils.md5DigestAsHex(sb.toString().getBytes()))) {
-        if (StringUtils.equals(DigestUtils.md5DigestAsHex(sb.toString().getBytes())
-                , DigestUtils.md5DigestAsHex(sb.toString().getBytes()))) {
+        if (StringUtils.equals(signature, DigestUtils.md5DigestAsHex(sb.toString().getBytes()))) {
             ThirdUser thirdUser = thirdUserService.getThirdUser(type, thirdUserParam.getOpen_id());
             Integer userId = null;
             User user = null;

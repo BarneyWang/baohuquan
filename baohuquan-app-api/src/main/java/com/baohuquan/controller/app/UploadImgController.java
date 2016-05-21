@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +23,7 @@ import static com.baohuquan.constant.URIConstants.CDNURL_TEST;
  * Created by wangdi5 on 2016/4/10.
  */
 @Controller
-@RequestMapping(value = "/upload", produces = {"application/json;charset=UTF-8"})
+@RequestMapping(value = "/upload")
 public class UploadImgController {
 
 
@@ -31,7 +32,7 @@ public class UploadImgController {
 
     @TokenRequired
     @ResponseBody
-    @RequestMapping(value="/img")
+    @RequestMapping(value="/img", produces = {"application/json;charset=UTF-8"})
     public String upload(HttpServletRequest request,HttpServletResponse response){
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
@@ -56,7 +57,7 @@ public class UploadImgController {
                     String myFileName = file.getOriginalFilename();
                     //如果名称不为“”,说明该文件存在，否则说明该文件不存在
                     if(myFileName.trim() !=""){
-                        myFileName = MD5Utils.md5Hex(myFileName)+"."+file.getContentType();
+                        myFileName = MD5Utils.md5Hex(myFileName)+"."+myFileName.split("\\.")[1];
                         try {
                              o = ImgUploadUtils.uploadImg(myFileName,file.getBytes());
                         } catch (Exception e) {
@@ -72,8 +73,16 @@ public class UploadImgController {
         }
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
-        responseWrapper.addValue("url",CDNURL_TEST+"/"+o.getString("key"));
+        responseWrapper.addValue("url",CDNURL_TEST+o.getString("key"));
         responseWrapper.setCost(System.currentTimeMillis()-start);
         return responseWrapper.toJSON();
+    }
+
+
+    @RequestMapping(value="uploadtest")
+    public ModelAndView uploadTest(HttpServletRequest request,HttpServletResponse response){
+
+
+        return new ModelAndView("upload");
     }
 }
