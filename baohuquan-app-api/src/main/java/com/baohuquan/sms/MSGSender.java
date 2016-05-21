@@ -29,7 +29,7 @@ public class MSGSender {
             log.info(phone + " SENDER sended,captcha:" + captcha + ",expire:" + expire + "ms");
             return true;
         }else {
-            log.info(phone + " SENDER msg fail");
+            log.info(phone + " SENDER msg fail"+"|code="+result.get("statusCode"));
             return false;
         }
     }

@@ -142,7 +142,7 @@ public class XMemcached {
 
     private static MemcachedClient init() {
 
-        String host = "10.154.252.64";
+        String host = "c09f679c12de454b.m.cnbjalicm12pub001.ocs.aliyuncs.com";
         int port =11211;
         XMemcachedClientBuilder builder =
                 new XMemcachedClientBuilder(AddrUtil.getAddresses(String.format("%s:%s", host, port)));
