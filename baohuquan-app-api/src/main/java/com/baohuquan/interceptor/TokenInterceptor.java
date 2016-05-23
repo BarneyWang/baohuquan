@@ -56,25 +56,13 @@ public class TokenInterceptor implements HandlerInterceptor {
             if (!mustLogin) {
                 return true;
             }
-
             ResponseWrapper responseWrapper = new ResponseWrapper();
             responseWrapper.setCode(ResponseCode.TOKEN_WRONG.getCode());
             responseWrapper.setMsg(ResponseCode.TOKEN_WRONG.getMsg());
             printJson(httpServletResponse, responseWrapper.toJSON());
             return false;
         }
-        //比较生成的uid是否一样
-        String uid = httpServletRequest.getParameter("uid");
-        if(StringUtils.isBlank(uid))
-            return false;
-
-        if(userId!=Integer.valueOf(uid)){
-            ResponseWrapper responseWrapper = new ResponseWrapper();
-            responseWrapper.setCode(ResponseCode.TOKEN_WRONG.getCode());
-            responseWrapper.setMsg(ResponseCode.TOKEN_WRONG.getMsg());
-            printJson(httpServletResponse, responseWrapper.toJSON());
-            return false;
-        }
+        httpServletRequest.setAttribute("uid",userId);
 
         return true;
     }
