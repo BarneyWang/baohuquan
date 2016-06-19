@@ -38,4 +38,11 @@ public interface TempsServiceIF {
      * @return
      */
     List<Temps> get(int babyid);
+
+    /**
+     * 获得最后一个
+     * @param babyid
+     * @return
+     */
+    String getLastTemps(int babyid);
 }

@@ -36,8 +36,8 @@ public class BabyServiceImpl implements BabyServiceIF {
      * @return
      */
     @Override
-    public int deleteBabyInfo(int id) {
-        return babyDao.deleteBabyInfo(id);
+    public int deleteBabyInfo(int id,int uid) {
+        return babyDao.deleteBabyInfo(id,uid);
     }
 
     /**

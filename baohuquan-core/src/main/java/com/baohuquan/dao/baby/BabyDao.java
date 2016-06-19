@@ -20,8 +20,8 @@ public interface BabyDao {
     @Insert("INSERT INTO t_baby("+INSERT_CLOUMNS+") values(#{uid},#{babyAvatar},#{tall},#{weight},#{gender},#{nickName},#{birthplace},#{createTime},#{birthday})")
     public int addBabyInfo(Baby baby);
 
-    @Delete("DELETE FROM t_baby where id=#{id}")
-    public int deleteBabyInfo(@Param("id") int id);
+    @Delete("DELETE FROM t_baby where uid=#{uid} and id= #{id}")
+    public int deleteBabyInfo(@Param("id") int id,@Param("uid") int uid );
 
     @Select("SELECT "+ CLOUMNS+" FROM t_baby WHERE uid=#{uid}")
     public List<Baby> getBabyInfo(@Param("uid") int uid);

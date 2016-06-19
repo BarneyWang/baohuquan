@@ -9,6 +9,7 @@ import com.baohuquan.utils.ResponseWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -80,10 +81,10 @@ public class BabyInfoController {
     @TokenRequired
     @ResponseBody
     @RequestMapping(value="/del/{id}")
-    public String delBabyInfo(@PathVariable Integer id){
+    public String delBabyInfo(@PathVariable Integer id,@RequestParam("uid") Integer uid){
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        int l=babyService.deleteBabyInfo(id);
+        int l=babyService.deleteBabyInfo(id,uid);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);

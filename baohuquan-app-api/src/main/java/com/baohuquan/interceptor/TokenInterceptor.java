@@ -1,6 +1,7 @@
 package com.baohuquan.interceptor;
 
 import com.baohuquan.anno.TokenRequired;
+import com.baohuquan.filter.HttpServletRequestDecorator;
 import com.baohuquan.utils.ResponseCode;
 import com.baohuquan.utils.ResponseWrapper;
 import com.baohuquan.utils.TokenUtil;
@@ -35,8 +36,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 //        }
 
 
-        if(StringUtils.isBlank(token)) {
-            if(!mustLogin) {
+        if (StringUtils.isBlank(token)) {
+            if (!mustLogin) {
                 return true;
             }
             ResponseWrapper responseWrapper = new ResponseWrapper();
@@ -46,7 +47,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if(token.equalsIgnoreCase("123sss123")){
+        if (token.equalsIgnoreCase("123sss123")) {
             return true;
         }
 
@@ -62,7 +63,10 @@ public class TokenInterceptor implements HandlerInterceptor {
             printJson(httpServletResponse, responseWrapper.toJSON());
             return false;
         }
-        httpServletRequest.setAttribute("uid",userId);
+
+
+        ((HttpServletRequestDecorator) httpServletRequest).getParameterMap().put("uid",  new String[]{String.valueOf(userId)});
+
 
         return true;
     }

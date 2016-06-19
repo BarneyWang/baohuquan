@@ -29,6 +29,24 @@ public class TempsController {
     TempsServiceIF tempsService;
 
 
+    /**
+     *
+     * @param babyid
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getlast/{babyid}")
+    public String getLastTemps(@PathVariable int babyid){
+        long start = System.currentTimeMillis();
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        String temp = tempsService.getLastTemps(babyid);
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
+        responseWrapper.addValue("temp", temp);
+        responseWrapper.setCost(System.currentTimeMillis() - start);
+        return responseWrapper.toJSON();
+    }
+
     @TokenRequired
     @ResponseBody
     @RequestMapping(value = "/download/{babyid}")

@@ -21,7 +21,7 @@ public interface BabyServiceIF {
      * @param id
      * @return
      */
-    int deleteBabyInfo(int id);
+    int deleteBabyInfo(int id,int uid);
 
     /**
      * 修改信息

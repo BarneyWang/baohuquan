@@ -48,7 +48,7 @@ public class BabyServiceTest {
         baby.setTall(12);
         babyService.updateBabyInfo(baby);
 
-//        babyService.deleteBabyInfo(l.get(0).getId());
+//        babyService.deleteBabyInfo(7);
 
 
     }
