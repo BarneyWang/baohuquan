@@ -13,9 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
 
 import static com.baohuquan.constant.URIConstants.CDNURL_TEST;
@@ -25,6 +29,28 @@ import static com.baohuquan.constant.URIConstants.CDNURL_TEST;
 @Controller
 @RequestMapping(value = "/upload")
 public class UploadImgController {
+
+
+    @TokenRequired
+    @ResponseBody
+    @RequestMapping(value="/image", produces = {"application/json;charset=UTF-8"})
+    public String uploadWithKey(HttpServletRequest httpRequest,HttpServletResponse response) throws IOException {
+        long start = System.currentTimeMillis();
+        JSONObject o=null;
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        BASE64Decoder decoder = new BASE64Decoder();
+        String image = httpRequest.getParameter("image");
+        String name = httpRequest.getParameter("name");
+        byte[] decode = decoder.decodeBuffer(image);
+        String myFileName = MD5Utils.md5Hex(name)+"."+name.split("\\.")[1];
+        o = ImgUploadUtils.uploadImg(myFileName,decode);
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
+        responseWrapper.addValue("url",CDNURL_TEST+o.getString("key"));
+        responseWrapper.setCost(System.currentTimeMillis()-start);
+        return responseWrapper.toJSON();
+    }
+
 
 
 
