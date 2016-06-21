@@ -14,7 +14,7 @@
 
     <context:annotation-config/>
 
-    <context:property-placeholder location="classpath:db.properties,classpath:sms.properties" />
+    <context:property-placeholder location="classpath:db.properties,classpath:sms.properties,classpath:cdn.properties" />
 
 
 

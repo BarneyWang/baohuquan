@@ -90,8 +90,31 @@ public class TempsController {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
         List<Temps> tempsList = tempsService.getByMonth(babyid,month,year);
-        Map<String, Object> data = Maps.newHashMap();
-        data.put("data", toJson(tempsList));
+        Map<String, Object> data = Maps.newLinkedHashMap();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR,year);
+        cal.set(Calendar.MONTH,month-1);
+        int dayCount=cal.getActualMaximum(Calendar.DATE);
+        String prefix=year+"-";
+        if(month>9){
+            prefix+="0"+month+"-";
+        }
+
+        for (int i = 1; i <=dayCount; i++) {
+            if(i<10){
+                prefix+="0"+i;
+            }else{
+                prefix+=i;
+            }
+            data.put(prefix,0);
+        }
+        for(Temps temps : tempsList){
+            Map<String, Object> map = Maps.newHashMap();
+            map.put("highTemp", temps.getHighTemp());
+            map.put("time", temps.getGetTime());
+            map.put("date", temps.getTempsDate());
+            data.put(temps.getTempsDate(),map);
+        }
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setData(data);
@@ -132,6 +155,9 @@ public class TempsController {
 
 
     }
+
+
+
 
 
     private List<Map<String, Object>> toJson(List<Temps> list) {
