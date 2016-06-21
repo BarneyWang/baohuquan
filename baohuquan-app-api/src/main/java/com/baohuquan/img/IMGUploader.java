@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.sun.xml.internal.ws.api.message.Packet.Status.Response;
-
 /**
  * Created by bojack on 16/4/24.
  */

@@ -1,5 +1,6 @@
 package com.baohuquan.controller.baby;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baohuquan.anno.TokenRequired;
 import com.baohuquan.model.Temps;
 import com.baohuquan.service.TempsServiceIF;
@@ -39,10 +40,11 @@ public class TempsController {
     public String getLastTemps(@PathVariable int babyid){
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        String temp = tempsService.getLastTemps(babyid);
+        JSONObject temp = tempsService.getLastTemps(babyid);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
-        responseWrapper.addValue("temp", temp);
+        responseWrapper.addValue("time", temp.getString("key"));
+        responseWrapper.addValue("temp", temp.getInteger("value"));
         responseWrapper.setCost(System.currentTimeMillis() - start);
         return responseWrapper.toJSON();
     }
@@ -96,24 +98,22 @@ public class TempsController {
         cal.set(Calendar.MONTH,month-1);
         int dayCount=cal.getActualMaximum(Calendar.DATE);
         String prefix=year+"-";
-        if(month>9){
+        if(month<9){
             prefix+="0"+month+"-";
         }
 
         for (int i = 1; i <=dayCount; i++) {
+            String t = prefix;
             if(i<10){
-                prefix+="0"+i;
+                t+="0"+i;
             }else{
-                prefix+=i;
+                t+=i;
             }
-            data.put(prefix,0);
+            data.put(t,0);
         }
         for(Temps temps : tempsList){
-            Map<String, Object> map = Maps.newHashMap();
-            map.put("highTemp", temps.getHighTemp());
-            map.put("time", temps.getGetTime());
-            map.put("date", temps.getTempsDate());
-            data.put(temps.getTempsDate(),map);
+
+            data.put(temps.getTempsDate(),temps.getHighTemp());
         }
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());

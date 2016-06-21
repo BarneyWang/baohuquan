@@ -184,24 +184,27 @@ public class TempsServiceImpl implements TempsServiceIF {
      * @return
      */
     @Override
-    public String getLastTemps(int babyId) {
+    public JSONObject getLastTemps(int babyId) {
         String tempDate = sdf.format(new Date());
+        JSONObject reObject =new JSONObject();
         Temps temps = tempsDao.getTemp(babyId, tempDate);
         if(temps==null)
-            return "";
+            return null;
         JSONArray arr = JSONArray.parseArray(temps.getTemps());
-        String temp="";
+
         if(arr==null)
-            return "";
+            return null;
         for (int i = arr.size() - 1; i >= 0; i--) {
             JSONObject o = (JSONObject) arr.get(i);
-            Integer x = (Integer) o.get(o.keySet().toArray()[0]);
+            String str=String.valueOf(o.keySet().toArray()[0]);
+            Integer x = (Integer) o.get(str);
             if(x!=0){
-                temp=String.valueOf(x);
+                reObject.put("key",str);
+                reObject.put("value",x);
                 break;
             }
         }
-        return temp;
+        return reObject;
     }
 
 

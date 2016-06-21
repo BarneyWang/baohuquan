@@ -1,5 +1,6 @@
 package com.baohuquan.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baohuquan.model.Temps;
 
 import java.util.Date;
@@ -44,5 +45,5 @@ public interface TempsServiceIF {
      * @param babyid
      * @return
      */
-    String getLastTemps(int babyid);
+    JSONObject getLastTemps(int babyid);
 }
