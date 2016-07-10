@@ -2,11 +2,10 @@ package com.baohuquan.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baohuquan.dao.temps.MonthTempsDao;
 import com.baohuquan.dao.temps.TempsDao;
-import com.baohuquan.model.MonthTemps;
 import com.baohuquan.model.Temps;
 import com.baohuquan.service.TempsServiceIF;
+import com.baohuquan.service.UserServiceIF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,9 @@ public class TempsServiceImpl implements TempsServiceIF {
     TempsDao tempsDao;
 
     @Resource
-    MonthTempsDao monthTempsDao;
+    UserServiceIF userService;
+
+
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -75,15 +76,15 @@ public class TempsServiceImpl implements TempsServiceIF {
      * @return
      */
     @Override
-    public Temps saveTemps(int babyId, Date day, int temp) {
+    public Temps saveTemps(int babyId, Date day, int temp,int uid) {
         String strDay = sdf.format(day);
         String key = String.format(HIGHTEMPKEY, babyId, strDay);
         //之前的值
         Temps preHighTemp  = tempsDao.getTemp(babyId, strDay);
-//        SortedMap<String, Integer>  map = Maps.newTreeMap();
+        //检查是否是头一次上传数据
+        int isFirst=userService.getUserUpload(uid)==null?userService.updateUploadTime(uid,day):0;
         JSONArray array = new JSONArray();
         //今天第一次上传是
-//        if (preHighTemp == null) {
             if (preHighTemp == null) {
                 //生成144个temps
                 Long time = getStartTime(day);
@@ -126,23 +127,22 @@ public class TempsServiceImpl implements TempsServiceIF {
         array.add(location,tempO);
         int highTemp = preHighTemp.getHighTemp() >= temp ? preHighTemp.getHighTemp() : temp;
         int i = tempsDao.updateTemps(preHighTemp.getId(), array.toJSONString(), highTemp);
-//        XMemcached.set(key, Constants.EXPIRE_DAY, preHighTemp);
         return preHighTemp;
 
     }
 
 
 
-    private void handleMonthTemps(int babyId,Date day,int highTemp){
-        Calendar todayStart = Calendar.getInstance();
-        todayStart.setTime(day);
-        int year = todayStart.get(Calendar.YEAR);
-        int month = todayStart.get(Calendar.MONTH);
-        MonthTemps monthTemps = monthTempsDao.getMonthTemps(year,month,babyId);
-        if(monthTemps==null){
-
-        }
-    }
+//    private void handleMonthTemps(int babyId,Date day,int highTemp){
+//        Calendar todayStart = Calendar.getInstance();
+//        todayStart.setTime(day);
+//        int year = todayStart.get(Calendar.YEAR);
+//        int month = todayStart.get(Calendar.MONTH);
+//        MonthTemps monthTemps = monthTempsDao.getMonthTemps(year,month,babyId);
+//        if(monthTemps==null){
+//
+//        }
+//    }
 
     private Long getStartTime(Date date){
         Calendar todayStart = Calendar.getInstance();

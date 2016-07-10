@@ -2,6 +2,8 @@ package com.baohuquan.service;
 
 import com.baohuquan.model.User;
 
+import java.util.Date;
+
 /**
  * Created by wangdi5 on 2016/3/20.
  */
@@ -24,4 +26,9 @@ public interface UserServiceIF {
 
 
     int updateGender(Integer uid, Integer gender);
+
+
+    Date getUserUpload(Integer uid);
+
+    int updateUploadTime(Integer uid, Date time);
 }

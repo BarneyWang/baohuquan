@@ -6,6 +6,7 @@ import com.baohuquan.service.UserServiceIF;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by wangdi5 on 2016/3/20.
@@ -61,6 +62,16 @@ public class UserServiceImpl implements UserServiceIF{
     @Override
     public int updateGender(Integer uid, Integer gender) {
         return  userDao.updateGender(uid, gender);
+    }
+
+    @Override
+    public Date getUserUpload(Integer uid) {
+        return userDao.getUserUploadTime(uid);
+    }
+
+    @Override
+    public int updateUploadTime(Integer uid, Date time) {
+        return userDao.updateUploadTime(uid,time);
     }
 
 

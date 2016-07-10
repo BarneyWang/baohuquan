@@ -1,7 +1,9 @@
 package com.baohuquan.controller.app;
 
+import com.baohuquan.anno.TokenRequired;
 import com.baohuquan.model.App;
 import com.baohuquan.service.AppServiceIF;
+import com.baohuquan.service.UserServiceIF;
 import com.baohuquan.utils.ResponseCode;
 import com.baohuquan.utils.ResponseWrapper;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 初始化app同步
@@ -29,6 +32,9 @@ public class InitController {
     @Resource
     AppServiceIF appService;
 
+    @Resource
+    UserServiceIF userServiceIF;
+
     @ResponseBody
     @RequestMapping(value = "/app")
     public String initApp(String appv,String appfrom,
@@ -44,6 +50,26 @@ public class InitController {
         responseWrapper.addValue("current_appv",app.getAppv());
         responseWrapper.addValue("is_force",app.getIsForce());
         responseWrapper.addValue("publish_time",app.getCreateTime().getTime());
+        responseWrapper.setCost(System.currentTimeMillis()-start);
+        return  responseWrapper.toJSON();
+    }
+
+
+    @TokenRequired
+    @ResponseBody
+    @RequestMapping(value = "/getuploadtime")
+    public String getUploadTime(@RequestParam Integer uid){
+
+        long start = System.currentTimeMillis();
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        Date date = userServiceIF.getUserUpload(uid);
+        responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
+        responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
+        if(date==null){
+            responseWrapper.addValue("time",0);
+        }else{
+            responseWrapper.addValue("time",date.getTime());
+        }
         responseWrapper.setCost(System.currentTimeMillis()-start);
         return  responseWrapper.toJSON();
     }

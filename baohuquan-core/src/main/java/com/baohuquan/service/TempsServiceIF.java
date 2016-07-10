@@ -30,7 +30,7 @@ public interface TempsServiceIF {
      * @param temp
      * @return
      */
-    public Temps saveTemps(int babyId, Date day, int temp);
+    public Temps saveTemps(int babyId, Date day, int temp,int uid);
 
 
     /**

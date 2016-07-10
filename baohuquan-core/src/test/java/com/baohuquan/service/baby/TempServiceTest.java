@@ -25,7 +25,7 @@ public class TempServiceTest {
     @Test
     public void test(){
         Temps temps = new Temps();
-        temps = tempsService.saveTemps(1,new Date(),3700);
+        temps = tempsService.saveTemps(1,new Date(),3700,30);
 
         System.out.println(temps.toString());
 
@@ -36,7 +36,7 @@ public class TempServiceTest {
         }
 
 
-        temps = tempsService.saveTemps(1,new Date(),3701);
+        temps = tempsService.saveTemps(1,new Date(),3701,30);
 
         System.out.println(temps.toString());
 

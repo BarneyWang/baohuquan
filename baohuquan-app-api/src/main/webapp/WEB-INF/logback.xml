@@ -39,6 +39,10 @@
     <!--<logger name="org.perf4j.logger"  level="info" additivity="false">-->
         <!--<appender-ref ref="CoalescingStatistics" />-->
     <!--</logger>-->
+    <logger name="org.apache.ibatis"  level="info" additivity="false">
+    <appender-ref ref="Console" />
+    </logger>
+
 
 
     <root level="info">

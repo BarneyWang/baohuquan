@@ -4,13 +4,15 @@ import com.baohuquan.model.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 /**
  * Created by wangdi5 on 2016/3/20.
  */
 @Repository
 public interface UserDao {
 
-     final static String CLOUMNS="id,area,cell_number AS cellNumber,nick_name  AS nickName,gender,avatar_url AS avatarUrl,create_time AS createTime,token";
+     final static String CLOUMNS="id,area,cell_number AS cellNumber,nick_name  AS nickName,gender,avatar_url AS avatarUrl,create_time AS createTime,token,upload_time AS uploadTime";
      final static String INSERT_CLOUMNS="area,cell_number,nick_name,gender,avatar_url,create_time,token";
 
 
@@ -38,4 +40,10 @@ public interface UserDao {
 
     @Update("update t_user set gender=#{gender} where id=#{uid}")
     int updateGender(@Param("uid")Integer uid, @Param("gender")  Integer gender);
+
+    @Select("select upload_time AS uploadTime from t_user where id=#{id}")
+    Date getUserUploadTime(int id);
+
+    @Update("update t_user set upload_time=#{uploadTime} where id= #{uid}")
+    int updateUploadTime(@Param("uid") Integer uid, @Param("uploadTime")  Date uploadTime);
 }

@@ -37,5 +37,7 @@ public interface TempsDao {
     @Select("SELECT  " + COLUMNS + " FROM t_temps where get_time >= #{start} and get_time <= #{end} and b_id =#{babyId}")
     public List<Temps> getTempByTime(@Param("babyId") int babyId, @Param("start") Date start, @Param("end") Date end);
 
+    @Select("SELECT  count(1) FROM t_temps where  b_id =#{babyId}")
+    public int isFisrtUpladTime(@Param("babyId") int babyId);
 
 }

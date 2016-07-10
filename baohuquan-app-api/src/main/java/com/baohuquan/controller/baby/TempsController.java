@@ -98,8 +98,10 @@ public class TempsController {
         cal.set(Calendar.MONTH,month-1);
         int dayCount=cal.getActualMaximum(Calendar.DATE);
         String prefix=year+"-";
-        if(month<9){
+        if(month<=9){
             prefix+="0"+month+"-";
+        }else{
+            prefix+=month+"-";
         }
 
         for (int i = 1; i <=dayCount; i++) {
@@ -128,10 +130,11 @@ public class TempsController {
     @RequestMapping(value = "/upload/{babyid}", method = {RequestMethod.POST,RequestMethod.GET})
     public String uploadTemps(@PathVariable int babyid,
                               @RequestParam Long time,
-                              @RequestParam Integer temp ) {
+                              @RequestParam Integer temp,
+                              @RequestParam Integer uid) {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
-        tempsService.saveTemps(babyid, new Date(time), temp);
+        tempsService.saveTemps(babyid, new Date(time), temp,uid);
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);
@@ -141,13 +144,14 @@ public class TempsController {
     @TokenRequired
     @RequestMapping(value = "/history/upload/{babyid}")
     public void uploadHistoryTemps(@PathVariable int babyid,
+                                   @RequestParam Integer uid,
                                    @RequestBody TempUpload[] tempUploads) {
 
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
 
         for (TempUpload temp : tempUploads) {
-            tempsService.saveTemps(babyid, new Date(temp.getTime()), temp.getTemp());
+            tempsService.saveTemps(babyid, new Date(temp.getTime()), temp.getTemp(),uid);
         }
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());

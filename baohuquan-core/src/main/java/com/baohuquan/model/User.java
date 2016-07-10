@@ -20,7 +20,7 @@ public class User  implements Serializable{
     private String avatarUrl;
     private Date createTime;
     private String token;
-    private String firstUploadTime="0";
+    private Date uploadTime;
 
 
     public String getToken() {
@@ -87,11 +87,12 @@ public class User  implements Serializable{
         this.createTime = createTime;
     }
 
-    public String getFirstUploadTime() {
-        return firstUploadTime;
+
+    public Date getUploadTime() {
+        return uploadTime;
     }
 
-    public void setFirstUploadTime(String firstUploadTime) {
-        this.firstUploadTime = firstUploadTime;
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
     }
 }

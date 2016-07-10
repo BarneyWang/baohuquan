@@ -37,8 +37,8 @@ public class HttpClientUtil {
     private static HttpClient httpClient;
     static {
         connectionManager = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setConnectionTimeout(3000);
-        connectionManager.getParams().setSoTimeout(2000);
+        connectionManager.getParams().setConnectionTimeout(5000);
+        connectionManager.getParams().setSoTimeout(5000);
         connectionManager.getParams().setDefaultMaxConnectionsPerHost(5);
         httpClient = new HttpClient(connectionManager);
     }
