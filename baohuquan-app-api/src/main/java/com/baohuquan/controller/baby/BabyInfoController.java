@@ -85,6 +85,9 @@ public class BabyInfoController {
         long start = System.currentTimeMillis();
         ResponseWrapper responseWrapper = new ResponseWrapper();
         int l=babyService.deleteBabyInfo(id,uid);
+        //删除babyshare信息
+        sharedBabyInfoService.cancelShared(id,uid);
+
         responseWrapper.setCode(ResponseCode.SUCCESS.getCode());
         responseWrapper.setMsg(ResponseCode.SUCCESS.getMsg());
         responseWrapper.setCost(System.currentTimeMillis() - start);

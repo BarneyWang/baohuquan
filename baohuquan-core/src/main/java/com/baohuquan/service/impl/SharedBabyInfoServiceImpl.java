@@ -112,6 +112,17 @@ public class SharedBabyInfoServiceImpl implements SharedBabyInfoServiceIF {
     }
 
     /**
+     * 解除所有
+     *
+     * @param babyId
+     * @return
+     */
+    @Override
+    public int cancelSharedByBabyId(int babyId) {
+        return 0;
+    }
+
+    /**
      * 查询通过手机号和babyid
      *
      * @param babyId

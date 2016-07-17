@@ -43,6 +43,13 @@ public interface SharedBabyInfoServiceIF {
      */
     int  cancelShared(int babyId,int uid);
 
+    /**
+     * 解除所有
+     * @param babyId
+     * @return
+     */
+    int cancelSharedByBabyId(int babyId);
+
 
     /**
      * 查询通过手机号和babyid
